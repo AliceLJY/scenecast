@@ -82,6 +82,15 @@ export function installSceneEngine(sceneSelector) {
       if (spec.x) spec.x = [Math.sign(spec.x[0]) * d, 0];
       if (spec.y) spec.y = [Math.sign(spec.y[0]) * d, 0];
     }
+    // optional extra channels, usable on top of any preset
+    if (el.dataset.animRotate != null) {
+      const p = el.dataset.animRotate.split(/\s+/).map(Number);
+      spec.rotate = p.length >= 2 ? [p[0], p[1]] : [p[0] || 0, 0];
+    }
+    if (el.dataset.animScale != null) {
+      const p = el.dataset.animScale.split(/\s+/).map(Number);
+      spec.scale = p.length >= 2 ? [p[0], p[1]] : [p[0], 1];
+    }
     return spec;
   };
 

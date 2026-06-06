@@ -91,6 +91,8 @@ Modifiers (all optional):
 | `data-anim-duration` | `0.6` | animation length (seconds) |
 | `data-anim-ease` | `outCubic` | `linear` / `outQuad` / `outCubic` / `outQuint` / `outBack` |
 | `data-anim-distance` | preset | slide distance in px for `fade-*` |
+| `data-anim-rotate` | — | extra rotation in deg, `"from to"` e.g. `"9 -1.6"` (works on any preset) |
+| `data-anim-scale` | — | scale endpoints, `"from"` (to `1`) or `"from to"` |
 | `data-anim-color` | — | target color for `highlight` (hex or `rgb()`) |
 | `data-anim-base` | — | a transform to keep, e.g. `translateX(-50%)` |
 

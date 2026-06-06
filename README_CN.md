@@ -91,6 +91,8 @@ await renderHtmlToVideo({ input: "deck.html", output: "out.mp4" });
 | `data-anim-duration` | `0.6` | 动画时长（秒） |
 | `data-anim-ease` | `outCubic` | `linear` / `outQuad` / `outCubic` / `outQuint` / `outBack` |
 | `data-anim-distance` | 预设值 | `fade-*` 的滑入距离（px） |
+| `data-anim-rotate` | — | 额外旋转（度），`"from to"` 如 `"9 -1.6"`（可叠加在任意预设上） |
+| `data-anim-scale` | — | 缩放端点，`"from"`（到 `1`）或 `"from to"` |
 | `data-anim-color` | — | `highlight` 的目标颜色（hex 或 `rgb()`） |
 | `data-anim-base` | — | 要保留的 transform，例如 `translateX(-50%)` |
 

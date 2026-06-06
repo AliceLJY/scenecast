@@ -1,0 +1,43 @@
+{
+  "name": "scenecast",
+  "version": "0.1.0",
+  "description": "Turn a paginated HTML deck into an element-level motion video. The HTML stays the only visual source — no template, no front-end framework.",
+  "type": "module",
+  "bin": {
+    "scenecast": "./src/cli.mjs"
+  },
+  "exports": {
+    ".": "./src/index.mjs"
+  },
+  "files": [
+    "src",
+    "demo/demo.html",
+    "demo/demo.gif",
+    "README.md",
+    "README_CN.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "demo": "node src/cli.mjs render demo/demo.html -o demo/demo.mp4 --keep-frames",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "peerDependencies": {
+    "playwright": ">=1.40.0"
+  },
+  "keywords": [
+    "html",
+    "video",
+    "animation",
+    "motion",
+    "playwright",
+    "ffmpeg",
+    "slides",
+    "deck",
+    "data-attributes"
+  ],
+  "license": "MIT",
+  "author": "AliceLJY"
+}

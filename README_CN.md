@@ -20,9 +20,12 @@ scenecast 用 Playwright 起 headless Chromium 打开你的 HTML，注入一个�
 ## 安装
 
 ```bash
-npm install scenecast playwright
+git clone https://github.com/AliceLJY/scenecast.git && cd scenecast
+npm install playwright            # 唯一运行时依赖（peer）
 npx playwright install chromium   # 一次性下载浏览器
 ```
+
+> **本地 clone 运行**——npm 上的 `scenecast` 是别人的无关包，不要 `npm i scenecast`。想要短命令 `scenecast`？在仓库目录里跑一次 `npm link`（否则用 `node src/cli.mjs`）。
 
 还需要 `PATH` 上有 **ffmpeg**：
 
@@ -46,16 +49,16 @@ Playwright 是 peer 依赖，版本由你决定。默认用 Playwright 自带的
 </section>
 ```
 
-渲染：
+渲染（在 clone 的仓库目录里；`npm link` 之后可直接用 `scenecast render …`）：
 
 ```bash
-npx scenecast render deck.html -o out.mp4
+node src/cli.mjs render deck.html -o out.mp4
 ```
 
 或在 Node 里：
 
 ```js
-import { renderHtmlToVideo } from "scenecast";
+import { renderHtmlToVideo } from "./src/index.mjs"; // clone 仓库内的相对路径
 
 await renderHtmlToVideo({ input: "deck.html", output: "out.mp4" });
 ```

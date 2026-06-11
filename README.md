@@ -20,9 +20,12 @@ scenecast opens your HTML in headless Chromium (Playwright), injects a dependenc
 ## Install
 
 ```bash
-npm install scenecast playwright
+git clone https://github.com/AliceLJY/scenecast.git && cd scenecast
+npm install playwright            # the only runtime dependency (peer)
 npx playwright install chromium   # one-time browser download
 ```
+
+> **Run it locally** — clone and run. The npm name `scenecast` belongs to an unrelated package, so don't `npm i scenecast`. Want a short `scenecast` command? Run `npm link` once inside the repo (otherwise use `node src/cli.mjs`).
 
 scenecast also needs **ffmpeg** on your `PATH`:
 
@@ -46,16 +49,16 @@ Mark each page with `data-scene`, and add `data-anim` to the elements you want t
 </section>
 ```
 
-Render it:
+Render it (from the cloned repo, or `scenecast render …` after `npm link`):
 
 ```bash
-npx scenecast render deck.html -o out.mp4
+node src/cli.mjs render deck.html -o out.mp4
 ```
 
 Or from Node:
 
 ```js
-import { renderHtmlToVideo } from "scenecast";
+import { renderHtmlToVideo } from "./src/index.mjs"; // path within the cloned repo
 
 await renderHtmlToVideo({ input: "deck.html", output: "out.mp4" });
 ```

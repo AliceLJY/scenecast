@@ -15,7 +15,7 @@ Most "HTML → video" tools either flip through whole pages like a slideshow, or
 
 ## How it works
 
-scenecast opens your HTML in headless Chromium (Playwright), injects a dependency-free, seek-based animation engine that reads your `data-anim` attributes, steps a virtual clock frame by frame while screenshotting each scene, then encodes the frames to MP4 with ffmpeg.
+scenecast opens your HTML in headless Chromium (Playwright), injects a dependency-free, seek-based animation engine that reads your `data-anim` attributes, steps a virtual clock frame by frame while screenshotting each scene, then encodes the frames to MP4, WebM, or GIF with ffmpeg (chosen by the output file extension).
 
 ## Install
 
@@ -119,7 +119,7 @@ scenecast render <input.html> -o <output.mp4> [options]
 
 | option | default | |
 | --- | --- | --- |
-| `-o, --output` | — | output mp4 (required) |
+| `-o, --output` | — | output file; codec by extension: .mp4 / .webm / .gif (required) |
 | `--scene-selector` | `[data-scene]` | which elements are scenes |
 | `--scene-duration` | `5` | seconds per scene |
 | `--fps` | `30` | frames per second |
@@ -127,7 +127,7 @@ scenecast render <input.html> -o <output.mp4> [options]
 | `--deck-width` / `--deck-height` | `1200` / `675` | your HTML's per-scene design size |
 | `--scale` | `2` | capture device scale factor (sharper text) |
 | `--channel` | bundled Chromium | e.g. `chrome` for system Chrome |
-| `--voiceover` | — | audio file; also writes `*-voiceover.mp4` |
+| `--voiceover` | — | audio file; also writes `*-voiceover.mp4` (mp4 output only) |
 | `--keep-frames` | off | keep the intermediate PNG frames |
 
 A runnable example lives in [`demo/demo.html`](demo/demo.html); `npm run demo` renders it.

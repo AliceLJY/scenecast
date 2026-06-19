@@ -13,10 +13,10 @@ function expandHome(p) {
 const HELP = `scenecast — turn a paginated HTML deck into an element-level motion video
 
 Usage:
-  scenecast render <input.html> -o <output.mp4> [options]
+  scenecast render <input.html> -o <output.mp4|.webm|.gif> [options]
 
 Options:
-  -o, --output PATH       Output mp4 (required)
+  -o, --output PATH       Output file; codec by extension: .mp4 / .webm / .gif (required)
   --scene-selector SEL    Scene selector (default: [data-scene])
   --scene-duration SEC    Seconds per scene (default: 5; per-scene via data-scene-duration)
   --fps N                 Frames per second (default: 30)
@@ -26,7 +26,7 @@ Options:
   --deck-height N         HTML design height per scene (default: 675)
   --scale N               Capture device scale factor (default: 2)
   --channel NAME          Chrome channel (default: Playwright's bundled Chromium)
-  --voiceover PATH        Audio to mux into a *-voiceover.mp4
+  --voiceover PATH        Audio to mux into a *-voiceover.mp4 (mp4 output only)
   --keep-frames           Keep the intermediate frame PNGs
   -h, --help              Show this help
 

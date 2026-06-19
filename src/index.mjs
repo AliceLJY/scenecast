@@ -59,13 +59,18 @@ export async function renderHtmlToVideo(options) {
 
   encodeFrames({ framesDir, output, fps: o.fps, width: o.width, height: o.height });
 
+  const warnings = [...(cap.warnings || [])];
   let voiceoverOutput = null;
   if (o.voiceover) {
-    // guard: if output isn't *.mp4, don't collide input/output paths in the mux
-    voiceoverOutput = /\.mp4$/i.test(output)
-      ? output.replace(/\.mp4$/i, "-voiceover.mp4")
-      : `${output}-voiceover.mp4`;
-    muxAudio({ video: output, audio: path.resolve(o.voiceover), output: voiceoverOutput });
+    // voiceover muxing only makes sense for mp4 (aac); webm/gif are skipped.
+    if (/\.mp4$/i.test(output)) {
+      voiceoverOutput = output.replace(/\.mp4$/i, "-voiceover.mp4");
+      muxAudio({ video: output, audio: path.resolve(o.voiceover), output: voiceoverOutput });
+    } else {
+      const w = `voiceover is only supported for .mp4 output; skipped (${path.extname(output) || "no extension"})`;
+      warnings.push(w);
+      console.warn(`scenecast: ${w}`);
+    }
   }
 
   if (!o.keepFrames) await fs.rm(framesDir, { recursive: true, force: true });
@@ -76,7 +81,7 @@ export async function renderHtmlToVideo(options) {
     scenes: cap.scenes,
     frames: cap.frames,
     durationSeconds: cap.frames / o.fps,
-    warnings: cap.warnings || [],
+    warnings,
     playwright: cap.playwright,
   };
 }

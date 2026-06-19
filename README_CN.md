@@ -15,7 +15,7 @@
 
 ## 原理
 
-scenecast 用 Playwright 起 headless Chromium 打开你的 HTML，注入一个零依赖的 seek 动画引擎（读你的 `data-anim` 属性），按虚拟时钟逐帧定格、截下每个 scene，再用 ffmpeg 把帧序列编码成 MP4。
+scenecast 用 Playwright 起 headless Chromium 打开你的 HTML，注入一个零依赖的 seek 动画引擎（读你的 `data-anim` 属性），按虚拟时钟逐帧定格、截下每个 scene，再用 ffmpeg 把帧序列编码成 MP4、WebM 或 GIF（由输出文件扩展名决定）。
 
 ## 安装
 
@@ -119,7 +119,7 @@ scenecast render <input.html> -o <output.mp4> [options]
 
 | 选项 | 默认 | |
 | --- | --- | --- |
-| `-o, --output` | — | 输出 mp4（必填） |
+| `-o, --output` | — | 输出文件；编码由扩展名决定：.mp4 / .webm / .gif（必填） |
 | `--scene-selector` | `[data-scene]` | 哪些元素算 scene |
 | `--scene-duration` | `5` | 每个 scene 几秒 |
 | `--fps` | `30` | 帧率 |
@@ -127,7 +127,7 @@ scenecast render <input.html> -o <output.mp4> [options]
 | `--deck-width` / `--deck-height` | `1200` / `675` | 你 HTML 每个 scene 的设计尺寸 |
 | `--scale` | `2` | 截图缩放因子（文字更锐利） |
 | `--channel` | 自带 Chromium | 例如 `chrome` 用系统 Chrome |
-| `--voiceover` | — | 音频文件；额外输出 `*-voiceover.mp4` |
+| `--voiceover` | — | 音频文件；额外输出 `*-voiceover.mp4`（仅 mp4 输出） |
 | `--keep-frames` | 关 | 保留中间的 PNG 帧 |
 
 可运行示例见 [`demo/demo.html`](demo/demo.html)，`npm run demo` 即可渲染。

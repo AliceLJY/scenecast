@@ -1,9 +1,22 @@
 // Browser-side capture: open the deck, inject the engine, step a virtual clock
 // per scene, and screenshot each scene element frame by frame.
 import path from "node:path";
+import { writeFile } from "node:fs/promises";
 import { pathToFileURL } from "node:url";
 import { loadPlaywright } from "./playwright-loader.mjs";
 import { installSceneEngine } from "./engine.mjs";
+
+// Cheap mid-buffer djb2: detect frames that never change (timeline not advancing).
+// Hashing a middle window keeps it fast on multi-MB PNGs while still
+// distinguishing distinct frames; identical frames yield identical bytes.
+function frameHash(buf) {
+  const len = buf.length;
+  const start = Math.max(0, (len >> 1) - 4096);
+  const end = Math.min(len, start + 8192);
+  let h = 5381;
+  for (let i = start; i < end; i += 1) h = (((h << 5) + h) + buf[i]) >>> 0;
+  return `${h}:${len}`;
+}
 
 export async function captureFrames({
   input,
@@ -52,20 +65,34 @@ export async function captureFrames({
           const v = parseFloat(el.dataset.sceneDuration);
           return Number.isFinite(v) ? v : -1;
         });
+        // Does this scene declare any animation? (used for the dead-frame check)
+        const hasAnim = await loc.evaluate(
+          (el) => el.hasAttribute("data-anim") || el.querySelector("[data-anim]") !== null,
+        );
         const dur = declared > 0 ? declared : sceneDuration;
         await page.evaluate((idx) => window.__scenecast.init(idx), i);
 
         const framesPerScene = Math.max(1, Math.round(fps * dur));
+        const sceneHashes = new Set();
         for (let f = 0; f < framesPerScene; f += 1) {
           // last frame lands exactly on `dur` so the final state is always captured
           // (a single-frame scene captures the end state, not t=0)
           const t = framesPerScene <= 1 ? dur : f === framesPerScene - 1 ? dur : f / fps;
           await page.evaluate((p) => window.__scenecast.render(p[0], p[1]), [i, t]);
           frameIdx += 1;
-          await loc.screenshot({
-            path: path.join(framesDir, `${String(frameIdx).padStart(5, "0")}.png`),
-            animations: "disabled",
-          });
+          const framePath = path.join(framesDir, `${String(frameIdx).padStart(5, "0")}.png`);
+          const buf = await loc.screenshot({ animations: "disabled", type: "png" });
+          await writeFile(framePath, buf);
+          sceneHashes.add(frameHash(buf));
+        }
+
+        // A scene that declares animation but yields a single unique frame across
+        // many frames means the timeline never advanced (engine/seek broken, or an
+        // invalid data-anim value). Surface it instead of silently shipping a still.
+        if (hasAnim && framesPerScene > 1 && sceneHashes.size === 1) {
+          const w = `scene ${i + 1} declares animation but all ${framesPerScene} frames are identical — the animation may not be running`;
+          warnings.push(w);
+          console.warn(`scenecast: ${w}`);
         }
       }
     } finally {

@@ -33,7 +33,7 @@ scenecast also needs **ffmpeg** on your `PATH`:
 - Debian/Ubuntu: `sudo apt install ffmpeg`
 - Windows: <https://ffmpeg.org/download.html>
 
-Playwright is a peer dependency, so you pick the version. By default scenecast uses Playwright's bundled Chromium; pass `--channel chrome` to use system Chrome instead.
+Playwright is a peer dependency, so you pick the version. By default scenecast tries Playwright's bundled Chromium and falls back to system Chrome when the bundled browser is not installed; pass `--channel chrome` to require system Chrome explicitly.
 
 ## Quick start
 

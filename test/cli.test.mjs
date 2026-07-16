@@ -51,7 +51,13 @@ test("option missing its value fails", async () => {
 test("non-positive --fps fails", async () => {
   const r = await run(["render", "deck.html", "-o", "out.mp4", "--fps", "0"]);
   assert.equal(r.code, 1);
-  assert.match(r.stderr, /--fps must be a positive number/);
+  assert.match(r.stderr, /--fps must be a finite positive number/);
+});
+
+test("infinite numeric options fail before rendering", async () => {
+  const r = await run(["render", "deck.html", "-o", "out.mp4", "--fps", "Infinity"]);
+  assert.equal(r.code, 1);
+  assert.match(r.stderr, /--fps must be a finite positive number/);
 });
 
 test("negative --width fails", async () => {

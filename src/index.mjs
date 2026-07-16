@@ -15,20 +15,24 @@ const DEFAULTS = {
   deckWidth: 1200,
   deckHeight: 675,
   scale: 2,
-  channel: "", // empty => Playwright's bundled Chromium (most portable)
+  channel: "", // empty => bundled Chromium, then system Chrome as a fallback
   voiceover: "",
   keepFrames: false,
 };
+
+function isPositiveFinite(value) {
+  return Number.isFinite(value) && value > 0;
+}
 
 export async function renderHtmlToVideo(options) {
   const o = { ...DEFAULTS, ...options };
   if (!o.input) throw new Error("renderHtmlToVideo: missing input");
   if (!o.output) throw new Error("renderHtmlToVideo: missing output");
-  if (!(o.fps > 0)) throw new Error(`renderHtmlToVideo: fps must be > 0 (got ${o.fps})`);
-  if (!(o.width > 0 && o.height > 0)) throw new Error("renderHtmlToVideo: width/height must be > 0");
-  if (!(o.deckWidth > 0 && o.deckHeight > 0)) throw new Error("renderHtmlToVideo: deckWidth/deckHeight must be > 0");
-  if (!(o.scale > 0)) throw new Error("renderHtmlToVideo: scale must be > 0");
-  if (!(o.sceneDuration > 0)) throw new Error("renderHtmlToVideo: sceneDuration must be > 0");
+  if (!isPositiveFinite(o.fps)) throw new Error(`renderHtmlToVideo: fps must be finite and > 0 (got ${o.fps})`);
+  if (!(isPositiveFinite(o.width) && isPositiveFinite(o.height))) throw new Error("renderHtmlToVideo: width/height must be finite and > 0");
+  if (!(isPositiveFinite(o.deckWidth) && isPositiveFinite(o.deckHeight))) throw new Error("renderHtmlToVideo: deckWidth/deckHeight must be finite and > 0");
+  if (!isPositiveFinite(o.scale)) throw new Error("renderHtmlToVideo: scale must be finite and > 0");
+  if (!isPositiveFinite(o.sceneDuration)) throw new Error("renderHtmlToVideo: sceneDuration must be finite and > 0");
 
   const input = path.resolve(o.input);
   const output = path.resolve(o.output);

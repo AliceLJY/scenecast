@@ -18,6 +18,21 @@ function frameHash(buf) {
   return `${h}:${len}`;
 }
 
+async function launchChromium(playwright, channel) {
+  if (channel) return playwright.chromium.launch({ headless: true, channel });
+
+  try {
+    return await playwright.chromium.launch({ headless: true });
+  } catch (bundledError) {
+    try {
+      return await playwright.chromium.launch({ headless: true, channel: "chrome" });
+    } catch {
+      // Preserve Playwright's actionable bundled-browser error when neither path works.
+      throw bundledError;
+    }
+  }
+}
+
 export async function captureFrames({
   input,
   framesDir,
@@ -30,10 +45,7 @@ export async function captureFrames({
   channel,
 }) {
   const { module: playwright, source } = loadPlaywright();
-  const launchOpts = { headless: true };
-  if (channel) launchOpts.channel = channel; // empty => Playwright's bundled Chromium
-
-  const browser = await playwright.chromium.launch(launchOpts);
+  const browser = await launchChromium(playwright, channel);
   let frameIdx = 0;
   let sceneCount = 0;
   let warnings = [];

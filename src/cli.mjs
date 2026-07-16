@@ -25,7 +25,7 @@ Options:
   --deck-width N          HTML design width per scene (default: 1200)
   --deck-height N         HTML design height per scene (default: 675)
   --scale N               Capture device scale factor (default: 2)
-  --channel NAME          Chrome channel (default: Playwright's bundled Chromium)
+  --channel NAME          Chrome channel (default: bundled Chromium, then system Chrome)
   --voiceover PATH        Audio to mux into a *-voiceover.mp4 (mp4 output only)
   --keep-frames           Keep the intermediate frame PNGs
   -h, --help              Show this help
@@ -45,6 +45,10 @@ const NEEDS_VALUE = new Set([
 ]);
 
 const POSITIVE = { sceneDuration: "--scene-duration", fps: "--fps", width: "--width", height: "--height", deckWidth: "--deck-width", deckHeight: "--deck-height", scale: "--scale" };
+
+function isPositiveFinite(value) {
+  return Number.isFinite(value) && value > 0;
+}
 
 function fail(msg) {
   console.error(`scenecast: ${msg}`);
@@ -82,7 +86,7 @@ function parse(argv) {
   if (rest.length > 1) fail(`unexpected extra arguments: ${rest.slice(1).join(", ")}`);
   o.input = rest[0];
   for (const [key, flag] of Object.entries(POSITIVE)) {
-    if (o[key] !== undefined && !(o[key] > 0)) fail(`${flag} must be a positive number`);
+    if (o[key] !== undefined && !isPositiveFinite(o[key])) fail(`${flag} must be a finite positive number`);
   }
   return o;
 }

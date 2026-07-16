@@ -33,7 +33,7 @@ npx playwright install chromium   # 一次性下载浏览器
 - Debian/Ubuntu：`sudo apt install ffmpeg`
 - Windows：<https://ffmpeg.org/download.html>
 
-Playwright 是 peer 依赖，版本由你决定。默认用 Playwright 自带的 Chromium；想用系统 Chrome 就加 `--channel chrome`。
+Playwright 是 peer 依赖，版本由你决定。默认先尝试 Playwright 自带的 Chromium；若浏览器二进制未安装，则自动改用系统 Chrome。想明确指定系统 Chrome，可加 `--channel chrome`。
 
 ## 快速开始
 

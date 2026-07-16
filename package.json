@@ -1,6 +1,7 @@
 {
   "name": "scenecast",
   "version": "0.1.0",
+  "private": true,
   "description": "Turn a paginated HTML deck into an element-level motion video. The HTML stays the only visual source — no template, no front-end framework.",
   "type": "module",
   "bin": {
@@ -26,6 +27,9 @@
   },
   "peerDependencies": {
     "playwright": ">=1.40.0"
+  },
+  "devDependencies": {
+    "playwright": "1.61.1"
   },
   "keywords": [
     "html",

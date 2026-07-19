@@ -114,7 +114,7 @@ Put `data-anim-stagger` on a container; its **direct children** enter in sequenc
 ## CLI
 
 ```
-scenecast render <input.html> -o <output.mp4> [options]
+scenecast render <input.html> -o <output.mp4|.webm|.gif> [options]
 ```
 
 | option | default | |

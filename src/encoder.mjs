@@ -2,6 +2,18 @@
 import { execFileSync } from "node:child_process";
 import path from "node:path";
 
+const SUPPORTED_OUTPUT_EXTENSIONS = new Set([".mp4", ".webm", ".gif"]);
+
+export function assertSupportedOutputExtension(output) {
+  const ext = path.extname(output).toLowerCase();
+  if (!SUPPORTED_OUTPUT_EXTENSIONS.has(ext)) {
+    throw new Error(
+      `unsupported output extension "${ext || "(none)"}"; expected .mp4, .webm, or .gif`,
+    );
+  }
+  return ext;
+}
+
 function runFfmpeg(args) {
   try {
     execFileSync("ffmpeg", args, { stdio: ["ignore", "ignore", "inherit"] });
@@ -23,11 +35,11 @@ function runFfmpeg(args) {
 //   .webm → VP9 (libvpx-vp9)
 //   .gif  → palettegen/paletteuse for accurate colors
 // All paths share the same lanczos downscale from the 2x-supersampled frames.
-function encodeArgs({ framesDir, output, fps, width, height }) {
+export function buildEncodeArgs({ framesDir, output, fps, width, height }) {
   const pattern = path.join(framesDir, "%05d.png");
   const scale = `scale=${width}:${height}:flags=lanczos`;
   const head = ["-y", "-framerate", String(fps), "-i", pattern];
-  const ext = path.extname(output).toLowerCase();
+  const ext = assertSupportedOutputExtension(output);
 
   if (ext === ".webm") {
     return [
@@ -48,7 +60,7 @@ function encodeArgs({ framesDir, output, fps, width, height }) {
     return [...head, "-filter_complex", fc, "-r", String(fps), output];
   }
 
-  // default: mp4 / H.264
+  // .mp4 / H.264
   return [
     ...head,
     "-vf", scale,
@@ -59,7 +71,7 @@ function encodeArgs({ framesDir, output, fps, width, height }) {
 }
 
 export function encodeFrames({ framesDir, output, fps, width, height }) {
-  runFfmpeg(encodeArgs({ framesDir, output, fps, width, height }));
+  runFfmpeg(buildEncodeArgs({ framesDir, output, fps, width, height }));
 }
 
 export function muxAudio({ video, audio, output }) {

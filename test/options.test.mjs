@@ -8,3 +8,10 @@ test("programmatic API rejects infinite numeric options before touching files", 
     /fps must be finite and > 0/,
   );
 });
+
+test("programmatic API rejects unsupported output extensions before touching files", async () => {
+  await assert.rejects(
+    renderHtmlToVideo({ input: "unused.html", output: "unused.avi" }),
+    /unsupported output extension.*\.avi/,
+  );
+});

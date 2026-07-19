@@ -178,7 +178,11 @@ export function installSceneEngine(sceneSelector) {
   const collectItems = (scene) => {
     const items = [];
     const staggered = new Set();
-    for (const container of scene.querySelectorAll("[data-anim-stagger]")) {
+    const staggerContainers = [
+      ...(scene.matches("[data-anim-stagger]") ? [scene] : []),
+      ...scene.querySelectorAll("[data-anim-stagger]"),
+    ];
+    for (const container of staggerContainers) {
       const step = num(container.dataset.animStagger, 0.1);
       [...container.children].forEach((child, i) => {
         const targets = [];
@@ -193,7 +197,11 @@ export function installSceneEngine(sceneSelector) {
         }
       });
     }
-    for (const el of scene.querySelectorAll("[data-anim]")) {
+    const animatedElements = [
+      ...(scene.matches("[data-anim]") ? [scene] : []),
+      ...scene.querySelectorAll("[data-anim]"),
+    ];
+    for (const el of animatedElements) {
       if (staggered.has(el)) continue;
       items.push({ el, spec: specOf(el) });
     }
@@ -216,7 +224,11 @@ export function installSceneEngine(sceneSelector) {
 
   // Up-front validation scan so typos surface as warnings (returned to the host).
   for (const scene of scenes) {
-    for (const el of scene.querySelectorAll("[data-anim]")) {
+    const animatedElements = [
+      ...(scene.matches("[data-anim]") ? [scene] : []),
+      ...scene.querySelectorAll("[data-anim]"),
+    ];
+    for (const el of animatedElements) {
       if (!PRESETS[el.dataset.anim]) warnings.push(`unknown data-anim="${el.dataset.anim}"`);
       if (el.dataset.animEase && !EASES[el.dataset.animEase]) {
         warnings.push(`unknown data-anim-ease="${el.dataset.animEase}" (falling back to outCubic)`);

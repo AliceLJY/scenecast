@@ -114,7 +114,7 @@ await renderHtmlToVideo({ input: "deck.html", output: "out.mp4" });
 ## CLI
 
 ```
-scenecast render <input.html> -o <output.mp4> [options]
+scenecast render <input.html> -o <output.mp4|.webm|.gif> [options]
 ```
 
 | 选项 | 默认 | |

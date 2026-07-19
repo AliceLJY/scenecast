@@ -2,7 +2,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { captureFrames } from "./renderer.mjs";
-import { encodeFrames, muxAudio } from "./encoder.mjs";
+import { assertSupportedOutputExtension, encodeFrames, muxAudio } from "./encoder.mjs";
 
 let renderCounter = 0; // disambiguates work dirs for concurrent renders in one process
 
@@ -36,6 +36,7 @@ export async function renderHtmlToVideo(options) {
 
   const input = path.resolve(o.input);
   const output = path.resolve(o.output);
+  assertSupportedOutputExtension(output);
   // pid in the work dir name so concurrent renders to the same output don't wipe
   // each other's frames.
   const work = o.workDir
@@ -45,49 +46,55 @@ export async function renderHtmlToVideo(options) {
 
   await fs.access(input);
   if (o.voiceover) await fs.access(path.resolve(o.voiceover));
-  await fs.rm(framesDir, { recursive: true, force: true });
-  await fs.mkdir(framesDir, { recursive: true });
-  await fs.mkdir(path.dirname(output), { recursive: true });
+  try {
+    await fs.rm(framesDir, { recursive: true, force: true });
+    await fs.mkdir(framesDir, { recursive: true });
+    await fs.mkdir(path.dirname(output), { recursive: true });
 
-  const cap = await captureFrames({
-    input,
-    framesDir,
-    sceneSelector: o.sceneSelector,
-    sceneDuration: o.sceneDuration,
-    fps: o.fps,
-    deckWidth: o.deckWidth,
-    deckHeight: o.deckHeight,
-    scale: o.scale,
-    channel: o.channel,
-  });
+    const cap = await captureFrames({
+      input,
+      framesDir,
+      sceneSelector: o.sceneSelector,
+      sceneDuration: o.sceneDuration,
+      fps: o.fps,
+      deckWidth: o.deckWidth,
+      deckHeight: o.deckHeight,
+      scale: o.scale,
+      channel: o.channel,
+    });
 
-  encodeFrames({ framesDir, output, fps: o.fps, width: o.width, height: o.height });
+    encodeFrames({ framesDir, output, fps: o.fps, width: o.width, height: o.height });
 
-  const warnings = [...(cap.warnings || [])];
-  let voiceoverOutput = null;
-  if (o.voiceover) {
-    // voiceover muxing only makes sense for mp4 (aac); webm/gif are skipped.
-    if (/\.mp4$/i.test(output)) {
-      voiceoverOutput = output.replace(/\.mp4$/i, "-voiceover.mp4");
-      muxAudio({ video: output, audio: path.resolve(o.voiceover), output: voiceoverOutput });
-    } else {
-      const w = `voiceover is only supported for .mp4 output; skipped (${path.extname(output) || "no extension"})`;
-      warnings.push(w);
-      console.warn(`scenecast: ${w}`);
+    const warnings = [...(cap.warnings || [])];
+    let voiceoverOutput = null;
+    if (o.voiceover) {
+      // voiceover muxing only makes sense for mp4 (aac); webm/gif are skipped.
+      if (/\.mp4$/i.test(output)) {
+        voiceoverOutput = output.replace(/\.mp4$/i, "-voiceover.mp4");
+        muxAudio({ video: output, audio: path.resolve(o.voiceover), output: voiceoverOutput });
+      } else {
+        const w = `voiceover is only supported for .mp4 output; skipped (${path.extname(output) || "no extension"})`;
+        warnings.push(w);
+        console.warn(`scenecast: ${w}`);
+      }
+    }
+
+    return {
+      output,
+      voiceoverOutput,
+      scenes: cap.scenes,
+      frames: cap.frames,
+      durationSeconds: cap.frames / o.fps,
+      warnings,
+      playwright: cap.playwright,
+    };
+  } finally {
+    if (!o.keepFrames) {
+      // A generated work directory contains only the frame directory, so remove
+      // it entirely. A caller-provided workDir may contain unrelated files.
+      await fs.rm(o.workDir ? framesDir : work, { recursive: true, force: true });
     }
   }
-
-  if (!o.keepFrames) await fs.rm(framesDir, { recursive: true, force: true });
-
-  return {
-    output,
-    voiceoverOutput,
-    scenes: cap.scenes,
-    frames: cap.frames,
-    durationSeconds: cap.frames / o.fps,
-    warnings,
-    playwright: cap.playwright,
-  };
 }
 
 export default { renderHtmlToVideo };

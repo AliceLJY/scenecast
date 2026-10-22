@@ -23,7 +23,7 @@ scenecast 用 Playwright 起 headless Chromium 打开你的 HTML，注入一个�
 
 ```bash
 git clone https://github.com/AliceLJY/scenecast.git && cd scenecast
-npm install playwright            # 唯一运行时依赖（peer）
+npm install                       # 装上 package-lock.json 锁定的 Playwright 1.61.1
 npx playwright install chromium   # 一次性下载浏览器
 ```
 
@@ -35,7 +35,7 @@ npx playwright install chromium   # 一次性下载浏览器
 - Debian/Ubuntu：`sudo apt install ffmpeg`
 - Windows：<https://ffmpeg.org/download.html>
 
-Playwright 是 peer 依赖，版本由你决定。默认先尝试 Playwright 自带的 Chromium；若浏览器二进制未安装，则自动改用系统 Chrome。想明确指定系统 Chrome，可加 `--channel chrome`。
+Playwright 是唯一的运行时依赖，以 peer 依赖声明（`>=1.40.0`），想用别的版本可以自己装；在 clone 里直接 `npm install` 拿到的是锁定的 1.61.1。默认先尝试 Playwright 自带的 Chromium；若浏览器二进制未安装，则自动改用系统 Chrome。想明确指定系统 Chrome，可加 `--channel chrome`。
 
 ## 快速开始
 
@@ -140,6 +140,7 @@ scenecast render <input.html> -o <output.mp4|.webm|.gif> [options]
 - **你已有的 CSS 动画 / 过渡不会被录进去。** 帧是 seek 驱动、用 `animations: "disabled"` 截取；动效来自 `data-anim`，不是 CSS keyframes。
 - **inline 元素的 transform 动画**（`fade-*`、`zoom-in`）会把它提升成 `inline-block`，可能改变换行和基线。优先给块级 / inline-block 元素加动画，行内文字用 `highlight`（只变色）。
 - **嵌套 `data-anim-stagger` 不支持**——最外层容器生效。
+- **死帧告警。** 某个场景声明了 `data-anim`，但截下的所有帧完全相同时，scenecast 会打印警告（「动画可能没在跑」），而不是悄悄交出一段静止视频。
 - **`data-anim-base` 是手动的。** 元素若已有想保留的 CSS transform，在这里重复一遍。
 - **count-up** 读元素的最终文本，支持整数、小数和前导单位 / 符号，但不处理任意格式；计数时千分位逗号会被去掉。
 

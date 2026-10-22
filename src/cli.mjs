@@ -35,6 +35,8 @@ Declarative animation (write it in your HTML):
   data-anim="fade | fade-up | fade-down | fade-left | fade-right
              | zoom-in | count-up | draw | highlight"
   data-anim-delay  data-anim-duration  data-anim-ease  data-anim-distance  data-anim-base
+  data-anim-rotate="9 -1.6"        extra rotation in deg (from to), on any preset
+  data-anim-scale="0.8"            scale from (to 1), or "from to"
   data-anim-color="#246bfe"        target color for highlight
   data-anim-stagger="0.12"         on a container; its children enter in sequence
 `;

@@ -23,7 +23,7 @@ scenecast opens your HTML in headless Chromium (Playwright), injects a dependenc
 
 ```bash
 git clone https://github.com/AliceLJY/scenecast.git && cd scenecast
-npm install playwright            # the only runtime dependency (peer)
+npm install                       # installs Playwright 1.61.1, the version pinned in package-lock.json
 npx playwright install chromium   # one-time browser download
 ```
 
@@ -35,7 +35,7 @@ scenecast also needs **ffmpeg** on your `PATH`:
 - Debian/Ubuntu: `sudo apt install ffmpeg`
 - Windows: <https://ffmpeg.org/download.html>
 
-Playwright is a peer dependency, so you pick the version. By default scenecast tries Playwright's bundled Chromium and falls back to system Chrome when the bundled browser is not installed; pass `--channel chrome` to require system Chrome explicitly.
+Playwright is the only runtime dependency. It is declared as a peer dependency (`>=1.40.0`), so you can install a different version yourself; `npm install` in a clone gives you the locked 1.61.1. By default scenecast tries Playwright's bundled Chromium and falls back to system Chrome when the bundled browser is not installed; pass `--channel chrome` to require system Chrome explicitly.
 
 ## Quick start
 
@@ -140,6 +140,7 @@ A runnable example lives in [`demo/demo.html`](demo/demo.html); `npm run demo` r
 - **Your existing CSS animations / transitions are not captured.** Frames are seek-driven and grabbed with `animations: "disabled"`; motion comes from `data-anim`, not from CSS keyframes.
 - **`transform` animations on inline elements** (`fade-*`, `zoom-in`) promote them to `inline-block`, which can change wrapping and baseline. Prefer animating block / inline-block elements, or use `highlight` (color only) for inline text.
 - **Nested `data-anim-stagger` is not supported** — the outermost container wins.
+- **Dead-frame warning.** If a scene declares `data-anim` but every captured frame of that scene is identical, scenecast prints a warning ("the animation may not be running") instead of silently handing you a still video.
 - **`data-anim-base` is manual.** If an element already has a CSS transform you want to keep, repeat it there.
 - **count-up** reads the element's final text. It handles integers, decimals, and a leading unit/sign, but not arbitrary formats; thousands separators are dropped while counting.
 

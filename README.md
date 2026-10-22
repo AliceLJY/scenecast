@@ -2,6 +2,8 @@
 
 > Turn a paginated HTML deck into an element-level motion video. The HTML stays the only visual source — no template, no front-end framework.
 
+> **Status:** stable · low-frequency maintenance · last verified 2026-10.
+
 ![scenecast demo](demo/demo.gif)
 
 ## Why

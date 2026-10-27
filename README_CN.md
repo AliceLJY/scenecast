@@ -132,7 +132,7 @@ scenecast render <input.html> -o <output.mp4|.webm|.gif> [options]
 | `--voiceover` | — | 音频文件；额外输出 `*-voiceover.mp4`（仅 mp4 输出） |
 | `--keep-frames` | 关 | 保留中间的 PNG 帧 |
 
-可运行示例见 [`demo/demo.html`](demo/demo.html)，`npm run demo` 即可渲染。
+可运行示例见 [`demo/demo.html`](demo/demo.html)，`npm run demo` 即可渲染。中文示例见 [`demo/demo-zh.html`](demo/demo-zh.html)（同一引擎，四个镜头换了深色、浅色和国风三种样式），`npm run demo:zh` 渲染。
 
 ## 注意事项与限制
 

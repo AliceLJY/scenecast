@@ -13,6 +13,7 @@
   "files": [
     "src",
     "demo/demo.html",
+    "demo/demo-zh.html",
     "demo/demo.gif",
     "README.md",
     "README_CN.md",
@@ -20,6 +21,7 @@
   ],
   "scripts": {
     "demo": "node src/cli.mjs render demo/demo.html -o demo/demo.mp4 --keep-frames",
+    "demo:zh": "node src/cli.mjs render demo/demo-zh.html -o demo/demo-zh.mp4",
     "test": "node --test"
   },
   "engines": {

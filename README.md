@@ -132,7 +132,7 @@ scenecast render <input.html> -o <output.mp4|.webm|.gif> [options]
 | `--voiceover` | — | audio file; also writes `*-voiceover.mp4` (mp4 output only) |
 | `--keep-frames` | off | keep the intermediate PNG frames |
 
-A runnable example lives in [`demo/demo.html`](demo/demo.html); `npm run demo` renders it.
+A runnable example lives in [`demo/demo.html`](demo/demo.html); `npm run demo` renders it. A Chinese-language example, [`demo/demo-zh.html`](demo/demo-zh.html), shows the same engine across dark, light and serif styles; `npm run demo:zh` renders it.
 
 ## Notes & limitations
 

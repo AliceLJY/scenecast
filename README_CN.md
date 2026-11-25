@@ -42,14 +42,16 @@ Playwright 是唯一的运行时依赖，以 peer 依赖声明（`>=1.40.0`）�
 每一页用 `data-scene` 标记，给想动的元素加 `data-anim`：
 
 ```html
-<section data-scene data-scene-duration="4">
+<section data-scene data-scene-duration="4" style="width:1200px;height:675px">
   <h1 data-anim="fade-left" data-anim-delay="0.1">Hello</h1>
   <span data-anim="count-up" data-anim-delay="0.6">128</span>
 </section>
-<section data-scene>
+<section data-scene style="width:1200px;height:675px">
   <p data-anim="fade-up">你写的 HTML 就是唯一视觉源。</p>
 </section>
 ```
+
+每个场景按它自己的尺寸截图、再缩放到视频画面，所以每个 `data-scene` 元素都要给出和 deck 一致的尺寸（默认 1200×675，见 `--deck-width` / `--deck-height`）；不写尺寸的场景只有文字那么高，渲染出来会被拉伸变形。
 
 把上面这段存成 clone 下来的仓库目录里的 `deck.html`（仓库本身不带 `deck.html`），再渲染（`npm link` 之后可直接用 `scenecast render …`）：
 
@@ -57,7 +59,7 @@ Playwright 是唯一的运行时依赖，以 peer 依赖声明（`>=1.40.0`）�
 node src/cli.mjs render deck.html -o out.mp4
 ```
 
-想先确认环境装好了、不自己写 HTML，可以跑 `npm run demo`，它会把仓库自带的 [`demo/demo.html`](demo/demo.html) 渲染成 `demo/demo.mp4`。
+想先确认环境装好了、不自己写 HTML，可以跑 `npm run demo`，它会把仓库自带的 [`demo/demo.html`](demo/demo.html) 渲染成 `demo/demo.mp4`；它会把中间帧（约 27 MB 的 PNG）留在 `demo/.scenecast-demo-*` 目录里，看完可以删掉。
 
 或在 Node 里：
 

@@ -42,14 +42,16 @@ Playwright is the only runtime dependency. It is declared as a peer dependency (
 Mark each page with `data-scene`, and add `data-anim` to the elements you want to move:
 
 ```html
-<section data-scene data-scene-duration="4">
+<section data-scene data-scene-duration="4" style="width:1200px;height:675px">
   <h1 data-anim="fade-left" data-anim-delay="0.1">Hello</h1>
   <span data-anim="count-up" data-anim-delay="0.6">128</span>
 </section>
-<section data-scene>
+<section data-scene style="width:1200px;height:675px">
   <p data-anim="fade-up">The HTML you wrote is the only visual source.</p>
 </section>
 ```
+
+Each scene is captured at its own size and scaled to the video frame, so give every `data-scene` element the deck size (default 1200×675, see `--deck-width` / `--deck-height`); a scene without a size is only as tall as its text and comes out stretched.
 
 Save that as `deck.html` in the cloned repo folder (the repo does not ship a `deck.html`), then render it (or `scenecast render …` after `npm link`):
 
@@ -57,7 +59,7 @@ Save that as `deck.html` in the cloned repo folder (the repo does not ship a `de
 node src/cli.mjs render deck.html -o out.mp4
 ```
 
-To check your setup without writing any HTML first, `npm run demo` renders the bundled [`demo/demo.html`](demo/demo.html) to `demo/demo.mp4`.
+To check your setup without writing any HTML first, `npm run demo` renders the bundled [`demo/demo.html`](demo/demo.html) to `demo/demo.mp4`; it keeps the intermediate frames (about 27 MB of PNGs) in a `demo/.scenecast-demo-*` folder, which you can delete afterwards.
 
 Or from Node:
 

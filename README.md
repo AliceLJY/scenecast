@@ -51,11 +51,13 @@ Mark each page with `data-scene`, and add `data-anim` to the elements you want t
 </section>
 ```
 
-Render it (from the cloned repo, or `scenecast render …` after `npm link`):
+Save that as `deck.html` in the cloned repo folder (the repo does not ship a `deck.html`), then render it (or `scenecast render …` after `npm link`):
 
 ```bash
 node src/cli.mjs render deck.html -o out.mp4
 ```
+
+To check your setup without writing any HTML first, `npm run demo` renders the bundled [`demo/demo.html`](demo/demo.html) to `demo/demo.mp4`.
 
 Or from Node:
 

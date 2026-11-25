@@ -51,11 +51,13 @@ Playwright 是唯一的运行时依赖，以 peer 依赖声明（`>=1.40.0`）�
 </section>
 ```
 
-渲染（在 clone 的仓库目录里；`npm link` 之后可直接用 `scenecast render …`）：
+把上面这段存成 clone 下来的仓库目录里的 `deck.html`（仓库本身不带 `deck.html`），再渲染（`npm link` 之后可直接用 `scenecast render …`）：
 
 ```bash
 node src/cli.mjs render deck.html -o out.mp4
 ```
+
+想先确认环境装好了、不自己写 HTML，可以跑 `npm run demo`，它会把仓库自带的 [`demo/demo.html`](demo/demo.html) 渲染成 `demo/demo.mp4`。
 
 或在 Node 里：
 
